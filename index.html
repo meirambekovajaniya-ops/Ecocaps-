@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EcoCaps — помощник для здоровых растений</title>
+<style>
+:root{--bg:#f5faf2;--card:#fff;--g:#1f8a4c;--gd:#0f4a2c;--lime:#b5e335;--mint:#d9f2e3;--tx:#18301f;--mu:#5f7566;--ln:#dfeadb;--warn:#c4721a;--bad:#b3402f;--r:22px;--sh:0 8px 28px rgba(31,138,76,.09)}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Segoe UI",Inter,system-ui,-apple-system,Roboto,sans-serif;background:linear-gradient(180deg,#eaf6e3,#fff 380px) var(--bg);color:var(--tx);line-height:1.5;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px));overflow-x:hidden}
+h1,h2,h3{color:var(--gd);line-height:1.2;letter-spacing:-.01em}
+h1{font-size:clamp(26px,6vw,40px)}h2{font-size:22px;margin-bottom:12px}h3{font-size:16px;margin-bottom:6px}
+p{max-width:68ch}.mu{color:var(--mu);font-size:14px}
+header{display:flex;align-items:center;gap:10px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 6px;max-width:1080px;margin:auto}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:20px;color:var(--gd)}
+.ring{width:30px;height:30px;border-radius:50%;border:8px solid var(--lime);background:var(--gd)}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-top:1px solid var(--ln);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;font:600 11px inherit;font-family:inherit;color:var(--mu);padding:6px 2px;border-radius:14px;cursor:pointer;min-width:0}
+nav button svg{width:22px;height:22px}
+nav button.on{color:var(--g);background:var(--mint)}
+main{max-width:1080px;margin:auto;padding:10px 18px}
+section{display:none}section.on{display:block;animation:in .25s}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){section.on{animation:none}}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:20px;margin-bottom:16px;border:1px solid var(--ln)}
+.hero{background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;border:0;padding:26px}
+.hero h1,.hero p{color:#fff}.hero p{opacity:.9;margin:10px 0 18px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.two{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:800px){.two{grid-template-columns:1fr 1fr}nav{max-width:620px;left:50%;transform:translateX(-50%);border-radius:22px 22px 0 0;border:1px solid var(--ln)}}
+.btn{border:0;border-radius:999px;padding:12px 20px;font:700 15px inherit;font-family:inherit;cursor:pointer;background:var(--lime);color:var(--gd);transition:transform .15s}
+.btn:active{transform:scale(.97)}.btn.sec{background:var(--mint)}.btn.line{background:#fff;border:1px solid var(--ln);color:var(--g)}.btn.sm{padding:7px 14px;font-size:13px}
+.btn.dk{background:#fff;color:var(--gd)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
+input,select,textarea{width:100%;font:16px inherit;font-family:inherit;padding:11px 13px;border:1px solid var(--ln);border-radius:14px;background:#fbfef9;color:var(--tx)}
+.pl{position:relative}
+.tag{display:inline-block;background:var(--mint);color:var(--gd);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:700;margin-right:5px}
+.tag.demo{background:var(--lime)}
+.bar{height:9px;background:var(--ln);border-radius:9px;overflow:hidden;margin:4px 0 10px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--lime),var(--g));border-radius:9px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}
+.note{border-radius:16px;padding:13px 15px;font-size:14px;margin:12px 0;background:#f0f8e4;border-left:5px solid var(--lime)}
+.note.w{background:#fdf1e1;border-color:var(--warn)}.note.b{background:#fbe9e5;border-color:var(--bad)}.note.i{background:var(--mint);border-color:var(--g)}
+.ph{height:14px;border-radius:9px;background:linear-gradient(90deg,#e0524a,#f2a33a,#e6d84a,#6cc070,#3aa6a0,#4a74c9,#6b4ec0);position:relative;margin:26px 0 8px}
+.ph b{position:absolute;top:-9px;width:6px;height:32px;background:var(--gd);border:2px solid #fff;border-radius:4px;transform:translateX(-50%);transition:left .4s}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{margin:0;font-weight:500;display:flex;align-items:center;gap:7px;background:#fbfef9;border:1px solid var(--ln);border-radius:14px;padding:9px 12px;cursor:pointer;width:auto}
+.chips input{width:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--ln);vertical-align:top}th{color:var(--gd)}
+.scroll{overflow-x:auto}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;font-weight:600}
+.flow span{background:var(--mint);padding:8px 12px;border-radius:12px}.flow em{color:var(--g);font-style:normal}
+.ph-img{aspect-ratio:16/9;border-radius:16px;border:2px dashed var(--ln);display:grid;place-items:center;text-align:center;color:var(--mu);font-size:13px;padding:10px;background:#fbfef9}
+dialog{border:0;border-radius:24px;padding:22px;width:min(440px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(15,74,44,.4)}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--gd);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;z-index:50;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+svg text{font-family:inherit}
+</style>
+</head>
+<body>
+<header><div class="logo"><div class="ring"></div>EcoCaps</div></header>
+<main>
+
+<section id="home" class="on">
+  <div class="card hero">
+    <h1>Здравствуйте! Ваш помощник для здоровых растений</h1>
+    <p>Добавляйте растения, анализируйте почву, рассчитывайте ориентировочную дозу EcoCaps, диагностируйте проблемы и следите за ростом — всё в одном месте.</p>
+    <button class="btn" onclick="openPlant()">Добавить растение</button>
+  </div>
+  <div class="row sp"><h2>Мои растения</h2><button class="btn sec sm" onclick="go('growth')">Отслеживать рост</button></div>
+  <div class="grid" id="plants"></div>
+  <div class="card" style="margin-top:16px;background:var(--mint);border:0">
+    <h3>Узнайте больше об EcoCaps</h3>
+    <p class="mu" style="margin-bottom:12px">Биоразлагаемые капсулы из яичной скорлупы, банановой кожуры и крахмала для постепенного питания растений.</p>
+    <button class="btn" onclick="go('about')">О технологии</button>
+  </div>
+</section>
+
+<section id="soil">
+  <h2>Анализ почвы</h2>
+  <div class="two">
+    <div class="card">
+      <label for="s_ph">Уровень pH (от 3 до 10)</label><input id="s_ph" type="number" step="0.1" min="3" max="10" placeholder="например, 7,8">
+      <label for="s_m">Влажность почвы, %</label><input id="s_m" type="number" min="0" max="100" placeholder="например, 45">
+      <label for="s_t">Тип почвы</label>
+      <select id="s_t"><option value="loam">Суглинок</option><option value="sand">Песчаная</option><option value="clay">Глинистая</option><option value="carb">Карбонатная (вскипает от кислоты)</option><option value="peat">Торфяной грунт</option></select>
+      <label for="s_f">Предполагаемое плодородие</label>
+      <select id="s_f"><option value="low">Низкое</option><option value="mid" selected>Среднее</option><option value="high">Высокое</option></select>
+      <label for="s_n">Дополнительные условия</label><textarea id="s_n" rows="2" placeholder="освещение, полив, культура…"></textarea>
+      <button class="btn" style="margin-top:14px" onclick="soil()">Проанализировать</button>
+    </div>
+    <div id="soilOut" class="card"><p class="mu">Введите показатели — здесь появятся шкала кислотности, оценка условий и рекомендации.</p></div>
+  </div>
+</section>
+
+<section id="calc">
+  <h2>Калькулятор удобрений EcoCaps</h2>
+  <div class="note w">Предварительные расчётные рекомендации. Точные нормы внесения в проекте ещё не установлены экспериментально; коэффициенты алгоритма условные и могут быть изменены.</div>
+  <div class="two">
+    <div class="card">
+      <label for="c_p">Вид растения</label>
+      <select id="c_p"><option value="1">Огурец (требовательная культура)</option><option value="1.2">Томат (требовательная культура)</option><option value="0.8">Зелень, салат</option><option value="0.7">Комнатные декоративные</option><option value="0.5">Суккуленты, кактусы</option></select>
+      <label for="c_v">Объём горшка или контейнера, л</label><input id="c_v" type="number" min="0.1" step="0.1" placeholder="например, 1,8">
+      <label for="c_t">Тип почвы</label>
+      <select id="c_t"><option value="1">Суглинок</option><option value="1.2">Песчаная (быстрее вымывается)</option><option value="0.9">Глинистая</option><option value="1">Карбонатная</option><option value="1">Торфяной грунт</option></select>
+      <label for="c_h">Уровень pH почвы</label><input id="c_h" type="number" step="0.1" min="3" max="10" placeholder="например, 6,5">
+      <label for="c_s">Стадия развития</label>
+      <select id="c_s"><option value="0.5">Проростки</option><option value="1" selected>Активный рост</option><option value="1.2">Цветение и плодоношение</option><option value="0">Покой</option></select>
+      <button class="btn" style="margin-top:14px" onclick="calc()">Рассчитать</button>
+    </div>
+    <div id="calcOut" class="card"><p class="mu">Результат появится после расчёта.</p></div>
+  </div>
+</section>
+
+<section id="diag">
+  <h2>Диагностика растений</h2>
+  <div class="two">
+    <div class="card">
+      <h3>По фотографии</h3>
+      <input id="d_f" type="file" accept="image/*" onchange="prev(this)">
+      <img id="d_img" alt="Предпросмотр" style="display:none;width:100%;border-radius:16px;margin-top:12px;max-height:260px;object-fit:cover">
+      <button class="btn" style="margin-top:12px" onclick="photoDiag()">Начать диагностику</button>
+      <div id="d_out"></div>
+    </div>
+    <div class="card">
+      <h3>Вручную</h3><p class="mu">Отметьте всё, что заметили:</p>
+      <div class="chips" style="margin-top:10px" id="symp"></div>
+      <button class="btn" style="margin-top:14px" onclick="manDiag()">Показать возможные причины</button>
+    </div>
+  </div>
+  <div id="m_out" class="grid"></div>
+</section>
+
+<section id="about">
+  <h2>EcoCaps — о технологии</h2>
+  <div class="card"><p>Капсулы EcoCaps изготавливают из бытовых биоотходов: яичной скорлупы, банановой кожуры и крахмала. Задача — постепенное питание растений вместо разовых жидких подкормок, которые могут вымываться при поливе.</p></div>
+  <div class="grid">
+    <div class="card"><span class="tag">Яичная скорлупа</span><p class="mu">Около 94% — карбонат кальция (CaCO₃). Источник кальция для почвенной среды.</p></div>
+    <div class="card"><span class="tag">Банановая кожура</span><p class="mu">Органическое сырьё, содержащее калий — потенциальный источник калия для растений.</p></div>
+    <div class="card"><span class="tag">Крахмал</span><p class="mu">Связующая матрица: формирует структуру капсулы, размягчается при контакте с влагой.</p></div>
+  </div>
+  <div class="card"><h3>Путь от сырья до внесения</h3>
+    <div class="flow"><span>Сырьё</span><em>→</em><span>Подготовка компонентов</span><em>→</em><span>Смешивание</span><em>→</em><span>Формирование капсулы</span><em>→</em><span>Высыхание</span><em>→</em><span>Внесение в почву</span></div></div>
+  <div class="card"><h3>Предполагаемый механизм</h3>
+    <ol style="padding-left:20px"><li>Влага взаимодействует с крахмальной матрицей.</li><li>Компоненты капсулы постепенно становятся доступными.</li><li>Кальций и калий могут поступать в почвенную среду.</li><li>Растение использует доступные питательные элементы.</li></ol>
+    <p class="mu" style="margin-top:8px">CaCO₃ + 2H⁺ → Ca²⁺ + H₂O + CO₂↑. Подкисление возможно на кислых и нейтральных грунтах, но не для любой почвы.</p>
+    <div class="note w">Механизм предполагаемый. Скорость высвобождения Ca и K ещё не измерялась и требует эксперимента.</div></div>
+  <div class="card"><h3>Фотографии продукта</h3>
+    <div class="two"><div class="ph-img">Здесь размещается фото образцов EcoCaps</div><div class="ph-img">Здесь размещается фото капсулы в почве</div></div>
+    <p class="mu" style="margin-top:8px">Замените эти блоки собственными фотографиями (тег &lt;img&gt;).</p></div>
+</section>
+
+<section id="growth">
+  <h2>График роста</h2>
+  <div class="card">
+    <label for="g_p">Растение</label><select id="g_p" onchange="drawG()"></select>
+    <div id="g_note"></div>
+    <div id="chart" style="margin-top:10px"></div>
+    <div class="row mu" style="margin-top:6px"><span style="color:var(--g)">● EcoCaps / растение</span><span style="color:var(--mu)">● Контроль (без всходов)</span></div>
+  </div>
+  <div class="card"><h3>История наблюдений</h3><div class="scroll"><table id="g_t"></table></div></div>
+  <div class="card" id="g_add"><h3>Новое наблюдение</h3>
+    <div class="two"><div><label for="o_d">Дата</label><input id="o_d" type="date"></div><div><label for="o_h">Высота, см</label><input id="o_h" type="number" min="0" step="0.1"></div>
+    <div><label for="o_l">Количество листьев</label><input id="o_l" type="number" min="0"></div><div><label for="o_s">Стадия развития</label><input id="o_s" placeholder="например, цветение"></div></div>
+    <button class="btn" style="margin-top:14px" onclick="addObs()">Сохранить наблюдение</button></div>
+</section>
+</main>
+
+<nav id="nav"></nav>
+
+<dialog id="dlg"><form method="dialog" onsubmit="return false">
+  <h2 id="dT">Добавить растение</h2>
+  <label for="p_n">Название</label><input id="p_n" placeholder="например, Томат «Черри»">
+  <label for="p_c">Категория</label><select id="p_c"><option>Овощи</option><option>Зелень</option><option>Комнатные</option><option>Садовые</option><option>Другое</option></select>
+  <label for="p_s">Стадия развития</label><select id="p_s"><option>Проросток</option><option>Активный рост</option><option>Цветение</option><option>Плодоношение</option><option>Покой</option></select>
+  <div class="two" style="gap:10px"><div><label for="p_m">Влажность, %</label><input id="p_m" type="number" min="0" max="100"></div><div><label for="p_l">Освещение</label><select id="p_l"><option value="">Не указано</option><option>Низкое</option><option>Среднее</option><option>Яркое</option></select></div></div>
+  <div class="row" style="margin-top:18px"><button class="btn" onclick="savePlant()">Сохранить</button><button class="btn line" onclick="dlg.close()">Отмена</button></div>
+</form></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const ICON={home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',soil:'<path d="M12 3c4 4 6 7 6 10a6 6 0 0 1-12 0c0-3 2-6 6-10z"/>',calc:'<rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/>',diag:'<circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/>',about:'<path d="M5 19c0-8 5-13 14-14 0 9-5 14-14 14zM5 19c3-5 6-8 9-10"/>',growth:'<path d="M3 20h18M6 16l4-5 4 3 5-8"/>'};
+const TABS=[['home','Главная'],['soil','Почва'],['calc','Расчёт'],['diag','Диагностика'],['about','EcoCaps'],['growth','Рост']];
+$('nav').innerHTML=TABS.map(([k,t])=>`<button data-k="${k}" onclick="go('${k}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>${t}</button>`).join('');
+function go(k){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===k));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));if(k==='growth')drawG();window.scrollTo({top:0,behavior:'smooth'})}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2400)}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---- данные пилотного опыта (реальные, не изменять) ---- */
+const PILOT=[
+ {date:'18 сентября',day:18,h:3.5,l:0,stage:'Всход, 2 семядоли',txt:'≈3–4 см (оценка по фото), 2 семядоли'},
+ {date:'8 октября',day:38,h:10,l:1,stage:'Первый настоящий лист',txt:'≈10 см (оценка по фото), 1 настоящий лист'},
+ {date:'23 октября',day:53,h:18,l:5,stage:'Рост листьев',txt:'≈18 см (оценка по фото), ≈5 листьев'},
+ {date:'19 ноября',day:80,h:61.5,l:10,stage:'Цветение и завязи',txt:'61–62 см (прямой замер), ≈10 листьев, цветение и завязи'}];
+const PILOT_NOTE='Предварительный пилотный опыт: один контейнер на вариант, режим полива контроля менялся. Результаты требуют повторных исследований и не доказывают универсальную эффективность удобрения.';
+const KEY='ecocaps_v1';
+let S=JSON.parse(localStorage.getItem(KEY)||'null')||{plants:[{id:'pilot',name:'Огурец (пилот)',cat:'Овощи',stage:'Цветение и завязи',moist:null,light:'',obs:[]}]};
+if(!S.plants.find(p=>p.id==='pilot'))S.plants.unshift({id:'pilot',name:'Огурец (пилот)',cat:'Овощи',stage:'Цветение и завязи',moist:null,light:'',obs:[]});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Не удалось сохранить данные в браузере')}}
+
+/* ---- растения ---- */
+let editId=null;
+function renderPlants(){
+ $('plants').innerHTML=S.plants.map(p=>{const pi=p.id==='pilot';
+  return `<div class="card" style="margin:0"><div>${pi?'<span class="tag demo">Демо</span>':''}<span class="tag">${esc(p.cat)}</span></div>
+  <h3 style="margin-top:8px;font-size:18px">${esc(p.name)}</h3><p class="mu">Стадия: ${esc(p.stage)}</p>
+  ${p.moist!=null&&p.moist!==''?`<p class="mu" style="margin-top:8px">Влажность: ${p.moist}%</p><div class="bar"><i style="width:${Math.min(100,p.moist)}%"></i></div>`:''}
+  ${p.light?`<p class="mu">Освещение: ${esc(p.light)}</p>`:''}
+  ${pi?'<p class="mu" style="margin-top:6px">Освещение и влажность не заданы в исследовании</p>':''}
+  <div class="row" style="margin-top:12px"><button class="btn sm" onclick="openGrowth('${p.id}')">Подробнее</button>${pi?'':`<button class="btn sm line" onclick="openPlant('${p.id}')">Изменить</button><button class="btn sm line" onclick="delPlant('${p.id}')">Удалить</button>`}</div></div>`}).join('');
+ $('g_p').innerHTML=S.plants.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+}
+function openPlant(id){editId=id||null;const p=S.plants.find(x=>x.id===id);$('dT').textContent=p?'Изменить растение':'Добавить растение';
+ $('p_n').value=p?p.name:'';$('p_c').value=p?p.cat:'Овощи';$('p_s').value=p?p.stage:'Проросток';$('p_m').value=p&&p.moist!=null?p.moist:'';$('p_l').value=p?p.light:'';$('dlg').showModal()}
+function savePlant(){const n=$('p_n').value.trim();if(!n){toast('Введите название растения');$('p_n').focus();return}
+ const m=$('p_m').value,o={name:n,cat:$('p_c').value,stage:$('p_s').value,moist:m===''?null:Math.min(100,Math.max(0,+m)),light:$('p_l').value};
+ if(editId)Object.assign(S.plants.find(x=>x.id===editId),o);else S.plants.push({id:'p'+Date.now(),obs:[],...o});
+ save();renderPlants();$('dlg').close();toast(editId?'Изменения сохранены':'Растение добавлено')}
+function delPlant(id){const p=S.plants.find(x=>x.id===id);if(confirm('Удалить «'+p.name+'» вместе с наблюдениями?')){S.plants=S.plants.filter(x=>x.id!==id);save();renderPlants();toast('Растение удалено')}}
+function openGrowth(id){go('growth');$('g_p').value=id;drawG()}
+
+/* ---- почва ---- */
+function soil(){const ph=parseFloat($('s_ph').value),m=parseFloat($('s_m').value),t=$('s_t').value,f=$('s_f').value;
+ if(isNaN(ph)||ph<3||ph>10){toast('Введите pH от 3 до 10');return}
+ let cls,txt,col;
+ if(ph<5.5){cls='Кислая';col='var(--bad)';txt='Подходит не всем культурам; доступность части элементов снижена. Кислые грунты обычно можно раскислять.'}
+ else if(ph<6.5){cls='Слабокислая';col='var(--g)';txt='Благоприятна для большинства овощей и комнатных растений.'}
+ else if(ph<7.5){cls='Нейтральная';col='var(--g)';txt='Подходит большинству культур. Дополнительное подщелачивание не требуется.'}
+ else if(ph<8.3){cls='Слабощелочная';col='var(--warn)';txt='Возможно снижение доступности железа, марганца и фосфора. Типично для карбонатных почв региона.'}
+ else{cls='Щелочная';col='var(--bad)';txt='Сильное подщелачивание: высокий риск хлороза и дефицита микроэлементов.'}
+ const probs=[],recs=[];let score=100;
+ if(ph>=7.5){score-=25;probs.push('Щелочная реакция может вызывать хлороз (бледные листья с зелёными жилками).');recs.push('Не вносите дополнительный источник кальция (CaCO₃) — он ещё сильнее подщелачивает почву.');recs.push('Используйте торф, кислые субстраты и подкисленную воду для полива.')}
+ if(ph<5.5){score-=20;probs.push('Повышенная кислотность угнетает корни и поглощение элементов.');recs.push('Умеренное раскисление: на таких грунтах кальций из скорлупы может быть уместен.')}
+ if(t==='carb'){score-=10;probs.push('Карбонатная почва уже богата кальцием.');recs.push('Приоритет — калий и органика, а не кальций.')}
+ if(t==='sand'){probs.push('Песчаная почва быстро теряет влагу и питательные вещества.');recs.push('Поливайте чаще и небольшими порциями; полезно постепенное питание.')}
+ if(t==='clay')recs.push('Глина плохо пропускает воздух — добавьте песок или перлит.');
+ if(!isNaN(m)){if(m<30){score-=15;probs.push('Почва слишком сухая.');recs.push('Увеличьте частоту полива.')}else if(m>75){score-=15;probs.push('Переувлажнение: риск загнивания корней.');recs.push('Обеспечьте дренаж, сократите полив.')}}
+ if(f==='low'){score-=10;recs.push('Низкое плодородие: добавьте органику (компост, перегной).')}
+ if(!recs.length)recs.push('Условия в норме: продолжайте наблюдение.');
+ score=Math.max(10,score);const pos=((ph-3)/7*100).toFixed(1);
+ $('soilOut').innerHTML=`<h3>Кислотность: <span style="color:${col}">${cls}</span> (pH ${ph})</h3><div class="ph"><b style="left:${pos}%"></b></div>
+ <div class="row sp mu"><span>3 кислая</span><span>7 нейтральная</span><span>10 щелочная</span></div><p style="margin-top:10px">${txt}</p>
+ <h3 style="margin-top:16px">Оценка условий: ${score}/100</h3><div class="bar"><i style="width:${score}%"></i></div>
+ ${probs.length?'<h3>Возможные проблемы</h3>'+probs.map(x=>`<div class="note w">${x}</div>`).join(''):'<div class="note">Существенных проблем по введённым данным не выявлено.</div>'}
+ <h3>Рекомендации</h3>${recs.map(x=>`<div class="note i">${x}</div>`).join('')}<p class="mu">Оценка ориентировочная и основана только на введённых значениях.</p>`}
+
+/* ---- калькулятор ---- */
+const CFG={litersPerCapsule:2,minPh:5.5,warnPh:7.5,intervalWeeks:4,maxApplications:3}; /* условные коэффициенты — заменить после экспериментов */
+function calc(){const v=parseFloat($('c_v').value),ph=parseFloat($('c_h').value);
+ if(!(v>0)){toast('Введите объём контейнера');return}if(isNaN(ph)||ph<3||ph>10){toast('Введите pH от 3 до 10');return}
+ const pk=+$('c_p').value,tk=+$('c_t').value,sk=+$('c_s').value,pt=$('c_p').selectedOptions[0].text,st=$('c_s').selectedOptions[0].text;
+ let raw=v/CFG.litersPerCapsule*pk*tk*sk,k=1,warn='';
+ if(ph>=CFG.warnPh){k=0;warn='<div class="note b"><b>Внесение EcoCaps не рекомендуется.</b> При pH '+ph+' почва щелочная, дополнительный кальций из скорлупы может усилить подщелачивание. Сначала проанализируйте почву; калийная составляющая не выделяется отдельно в текущей версии алгоритма.</div>'}
+ else if(ph>=7){k=.5;warn='<div class="note w">Почва нейтральная или близка к щелочной: доза уменьшена вдвое, наблюдайте за состоянием растения.</div>'}
+ else if(ph<CFG.minPh)warn='<div class="note i">Почва кислая: кальций из скорлупы может быть полезен.</div>';
+ const n=sk===0?0:Math.round(raw*k);const cap=(n===0&&k>0&&sk>0&&raw*k>0.25)?1:n;
+ const ex=sk===0?'Растение в покое — подкормка не требуется.':k===0?'Расчёт обнулён из-за высокой щёлочности почвы.':`Базовая норма: 1 капсула на ${CFG.litersPerCapsule} л почвы. Объём ${v} л умножен на коэффициенты: растение ×${pk}, почва ×${tk}, стадия ×${sk}${k!==1?', pH ×'+k:''}.`;
+ let sched='';if(cap>0){const t=[];for(let i=0;i<CFG.maxApplications;i++)t.push(`<tr><td>Неделя ${i*CFG.intervalWeeks}</td><td>${i?'Повторное внесение (по необходимости: '+Math.max(1,Math.round(cap/2))+' шт.)':cap+' шт.'}</td></tr>`);sched=`<h3>Предполагаемый график</h3><table>${t.join('')}</table>`}
+ $('calcOut').innerHTML=`<p class="mu">${esc(pt)} · ${v} л · pH ${ph} · ${esc(st)}</p><div style="font-size:48px;font-weight:800;color:var(--g)">${cap} <span style="font-size:18px">капсул</span></div><span class="tag demo">Предварительный расчёт</span>${warn}
+ <h3>Объяснение</h3><p>${ex}</p>${cap>0?`<h3 style="margin-top:12px">Как вносить</h3><p>Заглубите капсулы на 2–3 см в почву по краю контейнера, на расстоянии от стебля, затем полейте. Капсулы распределяйте равномерно.</p>`:''}${sched}`}
+
+/* ---- диагностика ---- */
+function prev(i){const f=i.files[0];if(!f)return;const im=$('d_img');im.src=URL.createObjectURL(f);im.style.display='block'}
+function photoDiag(){if(!$('d_f').files[0]){toast('Сначала загрузите фотографию');return}
+ $('d_out').innerHTML='<div class="note w"><b>Демонстрационная версия.</b> Нейросеть не подключена, поэтому автоматический анализ изображения не выполняется и диагноз по фото не ставится. Интерфейс подготовлен для подключения AI API.</div><div class="note i">Пока используйте ручную диагностику справа — она работает по введённым признакам.</div>'}
+const SYM={yel:['Пожелтение листьев',['Дефицит азота или железа (хлороз)','Переувлажнение и проблемы с корнями','Щелочная почва, блокирующая железо'],'Проверьте pH и дренаж; не вносите кальций на щелочной почве.'],
+ spot:['Пятна на листьях',['Грибковые или бактериальные болезни','Ожог от солнца или капель воды','Избыток влаги на листьях'],'Удалите поражённые листья, поливайте под корень, улучшите проветривание.'],
+ wilt:['Увядание',['Недостаток воды','Переувлажнение и загнивание корней','Перегрев'],'Проверьте влажность почвы на глубине 2–3 см перед поливом.'],
+ slow:['Замедление роста',['Недостаток света','Бедная почва или нехватка элементов питания','Тесный контейнер'],'Оцените освещение и плодородие; рассчитайте подкормку в калькуляторе.'],
+ edge:['Сухие края листьев',['Сухой воздух','Избыток солей или удобрений','Нерегулярный полив'],'Стабилизируйте полив, промойте почву.'],
+ drop:['Опадание листьев или завязей',['Резкая смена условий','Нехватка калия или света','Нерегулярный полив'],'Избегайте сквозняков и перепадов; следите за режимом полива.']};
+$('symp').innerHTML=Object.entries(SYM).map(([k,v])=>`<label><input type="checkbox" value="${k}">${v[0]}</label>`).join('');
+function manDiag(){const c=[...document.querySelectorAll('#symp input:checked')].map(i=>i.value);
+ $('m_out').innerHTML=c.length?c.map(k=>`<div class="card" style="margin:0"><h3>${SYM[k][0]}</h3><p class="mu">Возможные причины:</p><ul style="padding-left:18px;margin:4px 0 10px">${SYM[k][1].map(x=>`<li>${x}</li>`).join('')}</ul><div class="note i" style="margin:0">${SYM[k][2]}</div></div>`).join('')+'<div class="note w" style="grid-column:1/-1">Это общие возможные причины, а не точный диагноз.</div>':'';
+ if(!c.length)toast('Отметьте хотя бы один признак')}
+
+/* ---- рост ---- */
+function pts(){const p=S.plants.find(x=>x.id===$('g_p').value)||S.plants[0];
+ if(p.id==='pilot')return{p,rows:PILOT,pilot:true};
+ return{p,rows:p.obs.slice().sort((a,b)=>a.iso<b.iso?-1:1).map((o,i,a)=>({date:o.date,day:Math.round((new Date(o.iso)-new Date(a[0].iso))/864e5),h:o.h,l:o.l,stage:o.stage,txt:o.h+' см, листьев: '+o.l})),pilot:false}}
+function drawG(){if(!S.plants.length)return;const{p,rows,pilot}=pts();
+ $('g_note').innerHTML=pilot?`<div class="note w">${PILOT_NOTE}</div>`:'';
+ $('g_add').style.display=pilot?'none':'block';
+ if(!rows.length){$('chart').innerHTML='<p class="mu">Наблюдений пока нет. Добавьте первое ниже.</p>';$('g_t').innerHTML='';return}
+ const W=640,H=280,L=46,B=34,T=14,R=16,mx=Math.max(...rows.map(r=>r.day),1),my=Math.max(...rows.map(r=>r.h),10)*1.1;
+ const X=d=>L+d/mx*(W-L-R),Y=h=>H-B-h/my*(H-B-T);let g='';
+ for(let i=0;i<=4;i++){const v=my*i/4;g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#dfeadb"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="#5f7566">${Math.round(v)}</text>`}
+ const line=rows.map((r,i)=>(i?'L':'M')+X(r.day)+' '+Y(r.h)).join(' ');
+ g+=`<path d="${line}" fill="none" stroke="#1f8a4c" stroke-width="3" stroke-linejoin="round"/>`;
+ if(pilot)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(0)}" y2="${Y(0)}" stroke="#8aa092" stroke-width="3" stroke-dasharray="6 5"/>`;
+ g+=rows.map(r=>`<circle cx="${X(r.day)}" cy="${Y(r.h)}" r="5" fill="#b5e335" stroke="#1f8a4c" stroke-width="2.5"><title>${r.date}: ${r.h} см</title></circle><text x="${X(r.day)}" y="${H-12}" text-anchor="middle" font-size="11" fill="#5f7566">${pilot?'день '+r.day:r.date.slice(5)}</text>`).join('');
+ g+=`<text x="12" y="${T+4}" font-size="11" fill="#5f7566">см</text>`;
+ $('chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="График роста высоты">${g}</svg>`;
+ $('g_t').innerHTML=pilot?`<tr><th>Дата</th><th>Контроль</th><th>EcoCaps</th></tr>`+rows.map(r=>`<tr><td>${r.date}<br><span class="mu">день ${r.day}</span></td><td>Всход не наблюдался</td><td>${r.txt}</td></tr>`).join('')+`<tr><td colspan="3" class="mu">≈ — оценка по фото; прямой замер — 19 ноября. ${PILOT_NOTE}</td></tr>`
+ :`<tr><th>Дата</th><th>Высота</th><th>Листья</th><th>Стадия</th><th></th></tr>`+p.obs.slice().sort((a,b)=>a.iso<b.iso?-1:1).map(o=>`<tr><td>${o.date}</td><td>${o.h} см</td><td>${o.l}</td><td>${esc(o.stage||'—')}</td><td><button class="btn sm line" onclick="delObs('${o.id}')">Удалить</button></td></tr>`).join('')}
+function addObs(){const{p,pilot}=pts();if(pilot)return;const d=$('o_d').value,h=parseFloat($('o_h').value),l=parseInt($('o_l').value)||0;
+ if(!d||isNaN(h)||h<0){toast('Укажите дату и высоту растения');return}
+ p.obs.push({id:'o'+Date.now(),iso:d,date:d.split('-').reverse().join('.'),h,l,stage:$('o_s').value.trim()});
+ save();['o_h','o_l','o_s'].forEach(i=>$(i).value='');drawG();toast('Наблюдение сохранено')}
+function delObs(id){const{p}=pts();p.obs=p.obs.filter(o=>o.id!==id);save();drawG();toast('Наблюдение удалено')}
+$('o_d').valueAsDate=new Date();
+renderPlants();go('home');
+</script>
+</body>
+</html>
